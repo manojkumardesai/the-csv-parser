@@ -4,12 +4,11 @@
 
 var path = require("path");
 var fs = require("fs");
-var zlib = require("zlib");
 var Transform = require("stream").Transform;
 
 var args = require("minimist")(process.argv.slice(2), {
-    boolean: ["help", "in", "out", "uncompress", "compress", ],
-    string: ["file", ],
+    boolean: ["help", "in", "out"],
+    string: ["file"],
 });
 
 const BASEPATH =
@@ -59,23 +58,19 @@ function error(err, showHelp = false) {
 }
 
 function processFile(inputStream) {
-    var stream = inputStream;
-    var outStream;
-
+    var outStream = inputStream;
+    var targetStream;
     var upperCaseTr = new Transform({
         transform(chunk, encoding, callback) {
             this.push(chunk.toString().toUpperCase());
             callback();
         }
     });
-
-    stream = stream.pipe(upperCaseTr);
-
+    outStream = outStream.pipe(upperCaseTr);
     if (args.out) {
-        outStream = process.stdout;
+        targetStream = process.stdout;
     } else {
-        outStream = fs.createWriteStream(OUTPATH);
+        targetStream = fs.createWriteStream(OUTPATH);
     }
-
-    stream.pipe(outStream);
+    outStream.pipe(targetStream);
 }
