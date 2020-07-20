@@ -37,7 +37,7 @@ if (args.help || process.argv.length <= 2) {
 // ************************************
 
 function printHelp() {
-    console.log("ex2 usage:");
+    console.log("The CSV Parser Usage Guide:");
     console.log("");
     console.log("--help                      print this help");
     console.log("-, --in                     read file from stdin");

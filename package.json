@@ -1,0 +1,22 @@
+{
+  "name": "y",
+  "version": "1.0.0",
+  "description": "The CSV Parser",
+  "main": "the-csv-parser.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manojkumardesai/the-csv-parser.git"
+  },
+  "author": "Manoj Kumar Desai <manojkumardbe@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/manojkumardesai/the-csv-parser/issues"
+  },
+  "homepage": "https://github.com/manojkumardesai/the-csv-parser#readme",
+  "dependencies": {
+    "minimist": "^1.2.5"
+  }
+}
