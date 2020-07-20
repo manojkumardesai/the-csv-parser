@@ -7,7 +7,7 @@ var fs = require("fs");
 var Transform = require("stream").Transform;
 
 var args = require("minimist")(process.argv.slice(2), {
-    boolean: ["help", "in", "out"],
+    boolean: ["help", "in", "out", "tsv"],
     string: ["file"],
 });
 
@@ -41,9 +41,8 @@ function printHelp() {
     console.log("--help                      print this help");
     console.log("-, --in                     read file from stdin");
     console.log("--file={FILENAME}           read file from {FILENAME}");
-    console.log("--uncompress                uncompress input file with gzip");
-    console.log("--compress                  compress output with gzip");
     console.log("--out                       print output");
+    console.log("--tsv                       parse TSV");
     console.log("");
     console.log("");
 }
@@ -59,10 +58,14 @@ function error(err, showHelp = false) {
 
 function processFile(inputStream) {
     var outStream = inputStream;
+    let conversionAlg = csvToJson;
+    if (args.tsv) {
+        conversionAlg = tsvToJson;
+    }
     var targetStream;
     var upperCaseTr = new Transform({
         transform(chunk, encoding, callback) {
-            this.push(csvToJson(chunk.toString()));
+            this.push(conversionAlg(chunk.toString()));
             callback();
         }
     });
@@ -86,6 +89,32 @@ function csvToJson(csv) {
 
         var obj = {};
         var currentline = lines[i].split(",");
+
+        for (var j = 0; j < headers.length; j++) {
+            obj[headers[j]] = currentline[j];
+        }
+
+        result.push(obj);
+
+    }
+
+    //return result; //JavaScript object
+    return JSON.stringify(result); //JSON
+}
+
+//var tsv is the TSV file with headers
+function tsvToJson(tsv) {
+
+    var lines = tsv.split("\n");
+
+    var result = [];
+
+    var headers = lines[0].split("\t");
+
+    for (var i = 1; i < lines.length; i++) {
+
+        var obj = {};
+        var currentline = lines[i].split("\t");
 
         for (var j = 0; j < headers.length; j++) {
             obj[headers[j]] = currentline[j];
