@@ -58,14 +58,14 @@ function error(err, showHelp = false) {
 
 function processFile(inputStream) {
     let outStream = inputStream;
-    let conversionAlg = csvToJson;
+    let splitCharacter = ",";
     if (args.tsv) {
-        conversionAlg = tsvToJson;
+        splitCharacter = "\t";
     }
     let targetStream;
     const upperCaseTr = new Transform({
         transform(chunk, encoding, callback) {
-            this.push(conversionAlg(chunk.toString()));
+            this.push(parseAlgo(chunk.toString(), splitCharacter));
             callback();
         }
     });
@@ -78,43 +78,17 @@ function processFile(inputStream) {
     outStream.pipe(targetStream);
 }
 
-function csvToJson(csv) {
+function parseAlgo(csv, splitChar) {
     let lines = csv.split("\n");
 
     let result = [];
 
-    let headers = lines[0].split(",");
+    let headers = lines[0].split(splitChar);
 
     for (let i = 1; i < lines.length; i++) {
 
         let obj = {};
-        let currentline = lines[i].split(",");
-
-        for (let j = 0; j < headers.length; j++) {
-            obj[headers[j]] = currentline[j];
-        }
-
-        result.push(obj);
-
-    }
-
-    //return result; //JavaScript object
-    return JSON.stringify(result); //JSON
-}
-
-//let tsv is the TSV file with headers
-function tsvToJson(tsv) {
-
-    let lines = tsv.split("\n");
-
-    let result = [];
-
-    let headers = lines[0].split("\t");
-
-    for (let i = 1; i < lines.length; i++) {
-
-        let obj = {};
-        let currentline = lines[i].split("\t");
+        let currentline = lines[i].split(splitChar);
 
         for (let j = 0; j < headers.length; j++) {
             obj[headers[j]] = currentline[j];
