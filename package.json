@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/manojkumardesai/the-csv-parser#readme",
   "dependencies": {
-    "minimist": "^1.2.5"
+    "minimist": "^1.2.6"
   }
 }
